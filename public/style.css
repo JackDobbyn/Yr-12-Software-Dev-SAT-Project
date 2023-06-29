@@ -1,0 +1,149 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+#space {
+    line-height: 2.0;
+}
+
+#form1 {
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    padding-left: 4%;
+    padding-top: 1%;
+    height: 46.6vh;
+    border-width: thin;
+    
+}
+
+#form2 {
+    height: 93.4vh;
+    
+    padding: 0;
+}
+
+#form3 {
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    height: 93.4vh;
+    border-width: thin;
+}
+
+#right-form {
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    border-width: thin;
+    overflow-y: scroll;
+    
+}
+
+#left-form {
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    border-width: thin;
+    
+}
+
+#henry {
+    color: rgb(54, 54, 54);
+}
+
+#henry:hover {
+    color: lightgray;
+}
+ 
+#collapsible {
+    background-color: #eee;
+    color: black;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+  
+.active, #collapsible:hover {
+    background-color: #ccc;
+}
+  
+  
+#content {
+    padding: 10px;
+    display: none;
+    overflow: hidden;
+}
+
+#sec {
+    height: 250px;
+}
+
+.caret {
+    height: 3%;
+    width: 3%;
+}
+
+.caretFlip {
+    transform: rotate(180deg)
+}
+
+#details {
+    border-color: #dbdada;
+    border-style: solid;
+    border-width: thin;
+    height: 99.1%;
+}
+
+
+#one {
+    list-style-position: inside;
+}
+
+.height-fixed-content {
+    height: 200px;
+    border-style: solid;
+    border-color: #dbdada;
+    border-width: thin;
+}
+
+#storage {
+    padding-top: 2px;
+}
+
+#item {
+    background-color: rgb(253, 253, 253);
+    color: black;
+    padding: 15px;
+    margin-bottom: 2px;
+    margin-left: 1.25px;
+    margin-right: 1px;
+    margin-top: 1px;
+    width: calc(100% - 2px); 
+    border-style: solid;
+    border-color: #dbdada;
+    border-width: thin;
+    font-size: 10px;
+}
+
+.submitBox {
+    background-color: rgb(253, 253, 253);
+    color: black;
+    height: 45.5px;
+    padding-top: 2px;
+    width: calc(100% - 2px); 
+    border-style: solid;
+    border-color: #dbdada;
+    border-width: thin;
+    font-size: 10px;
+    
+}
+
+#thing {
+    display: inline-flex;
+}
+
+.overflow {
+    overflow-y: scroll;
+}

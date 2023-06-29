@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Laundry Hand</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <main>
+    <%- include('navbar'); %> <!--navbar included at the to of every page-->
+    <div class="columns">
+      <div class="column is-6"> <!--left hand side including navigation, -->
+        <div class="columns" id="form3">
+          <div class="column is-3" id="left-form">
+            <div class="is-size-4 has-text-weight-bold pl-2"><u>Navigation</u></div>
+            <div class="content">
+              <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Dependencies</div>
+              <ul class="is-size-7">
+                <li><a id="henry">Work</a></li>
+                <li><a id="henry">School</a></li>
+                <li><a id="henry">Other</a></li>
+              </ul>
+            </div>
+            <div class="content">
+              <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Colour</div>
+              <ul class="is-size-7">
+                <li><a id="henry">White</a></li>
+                <li><a id="henry">Coloured</a></li>
+              </ul>
+            </div>
+          </div>
+
+          
+          <div class="column is-9 px-0" id="right-form">
+            <% for (let i = 0; i < sections.length; i++) { %> 
+            <button type="button" id="collapsible"> <%= sections[i][0] %>
+              <img class="is-pulled-right caret" id="caret" src="caret1.png">
+            </button>
+            <div id="content">
+              <div class="columns" id="sec">
+                <div class="column is-6 has-text-centered" id="details">
+                  <div class="is-size-7 has-text-weight-bold">Number of Clothes:</div>
+                  <p class="is-size-7"><%= sections[i][1] %></p>
+                  <div class="is-size-7 has-text-weight-bold">Oldest Item at:</div>
+                  <p class="is-size-7"><%= sections[i][3] %></p>
+                  <div class="content">
+                    <div class="is-size-7 has-text-weight-bold">Dependencies</div>
+                    <ul class="is-size-7" id="one">
+                      <li><a id="henry"><%= sections[i][4][0] %></a></li>
+                      <li><a id="henry"><%= sections[i][4][1] %></a></li>
+                    </ul>
+                  </div>
+                </div> 
+                <div class="column is-6 px-0" id="storage">
+                  
+                  <form action="/items" method="post">
+                    <div class="overflow height-fixed-content">
+                      <% for (let j=0; j < item.length; j++) { %>
+                      <% if (sections[i][0] == item[j][2]) { %>
+                      <div id="item">
+                        <div class="columns is-vcentered">
+                          <div class="column is-3 has-text-centered">
+                            <p><%= item[j][0] %></p>
+                          </div>
+                          <div class="column is-7 has-text-centered">
+                            <p><%= item[j][1] %></p>
+                          </div>
+                          <div class="column is-2 has-text-centered">
+                            <div class="field">
+                              <div class="control">
+                                <input type="checkbox" name='send' value = '<%= item[j][3] + "-" + sections[i][0] %>'>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% } %>
+                      <% } %>
+                    </div>
+                    <div class="submitBox mr-4">
+                      <div class="columns">
+                        <div class="column is-3"></div>
+                        <div class="column is-9">
+                          <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="false">Send</button>
+                          <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="true">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% } %>
+          </div>
+        </div>
+      </div>
+      <div class="column is-6" id="form2">
+        <div id="form1">
+          <form action="/" method="post">
+            <div class="is-size-3 has-text-weight-bold">Clothes input form</div>
+            <div class="columns">
+              <div class="column is-6">
+                <div class="field">
+                  <label class="label">Name: </label>
+                  <div class="control">
+                    <input type="text" placeholder="e.g Hello Kitty Sock" name="name">
+                  </div>
+                </div>
+                <label class="label">Colour:</label>
+                <div class="field">
+                  <label class="label">White: </label>
+                  <div class="control">
+                    <input type="radio" name="colourOption" value="White">
+                  </div>
+                  <label class="label">Coloured: </label>
+                  <div class="control">
+                    <input type="radio" name="colourOption" value="Coloured">
+                  </div>
+                </div>
+              </div>
+              <div class="column is-3">
+                <label class="label">Dependencies:</label>
+                <div class="field">
+                  <label class="label">Work</label>
+                  <div class="control">
+                    <input type="checkbox" name="dOption[]" value="Work">
+                  </div>
+                  <label class="label">School</label>
+                  <div class="control">
+                    <input type="checkbox" name="dOption[]" value="School">
+                  </div>
+                  <label class="label">Other</label>
+                  <div class="control">
+                    <input type="checkbox" name="dOption[]" value="Other">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="column is-2">
+                <button type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="form1">
+          <form action="/family" method="post">
+            <div class="is-size-3 has-text-weight-bold">Family</div>
+            <div class="columns">
+              <div class="column is-6">
+                <div class="content">
+                  <div class="is-size-6 has-text-weight-bold has-text-grey">Machines In Use</div>
+                  <ul class="is-size-6">
+                    <li>
+                      <p>Washing Machine</p>
+                    </li>
+                    <li>
+                      <p>Dryer</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column is-6">
+                <div class="content">
+                  <div class="is-size-6 has-text-weight-bold has-text-grey">Members</div>
+                  <ul class="is-size-6">
+                    <li>
+                      <p>some@gmail.com</p>
+                    </li>
+                    <li>
+                      <div class="'field">
+                        <div class="control">
+                          <input type="text" name="member" placeholder="someone@gmail.com">
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="'field">
+                  <div class="control">
+                    <button type="submit">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+          <div class="is-size-6" id="watch"></div>  
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+#box {
+    border-color: rgb(54, 54, 54);
+    border-style: solid;
+    padding: 5%;
+    border-width: thin;
+}

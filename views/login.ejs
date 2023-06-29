@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>login</title>
+    <link href="login.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+
+<body>
+
+    <%- include('navbar'); %>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-6">
+                    <div id="box">
+                        <form action="/login" method="post">
+                            <div class="title size-10 has-text-centered">Login</div>
+                            <div class="field">
+                                <label class="label">Email: </label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="something@gmail.com">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Password: </label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="e9urhau607">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
