@@ -13,25 +13,25 @@
 
 <body>
   <main>
-    <%- include('navbar'); %> <!--navbar included at the to of every page-->
+    <%- include('navbar'); %> <!--navbar included at the top of every page-->
     <div class="columns">
-      <div class="column is-6"> <!--left hand side including navigation, -->
+      <div class="column is-6"> 
         <div class="columns" id="form3">
-          <div class="column is-3" id="left-form">
+          <div class="column is-3" id="left-form"> <!--navigation column -->
             <div class="is-size-4 has-text-weight-bold pl-2"><u>Navigation</u></div>
             <div class="content">
               <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Dependencies</div>
               <ul class="is-size-7">
-                <li><a id="henry">Work</a></li>
-                <li><a id="henry">School</a></li>
-                <li><a id="henry">Other</a></li>
+                <li><a id="nav-button">Work<img class="dot"src="dot.png"></a></li>
+                <li><a id="nav-button">School<img class="dot"src="dot.png"></a></li>
+                <li><a id="nav-button">Other<img class="dot"src="dot.png"></a></li>
               </ul>
             </div>
             <div class="content">
               <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Colour</div>
               <ul class="is-size-7">
-                <li><a id="henry">White</a></li>
-                <li><a id="henry">Coloured</a></li>
+                <li><a id="nav-button">White<img class="dot"src="dot.png"></a></li>
+                <li><a id="nav-button">Coloured<img class="dot"src="dot.png"></a></li>
               </ul>
             </div>
           </div>
@@ -52,29 +52,30 @@
                   <div class="content">
                     <div class="is-size-7 has-text-weight-bold">Dependencies</div>
                     <ul class="is-size-7" id="one">
-                      <li><a id="henry"><%= sections[i][4][0] %></a></li>
-                      <li><a id="henry"><%= sections[i][4][1] %></a></li>
+                      <li><a id="item-button"><%= sections[i][4] %><img class="dot"src="dot.png"></a></li>
+                      <li><a id="item-button"><%= sections[i][5] %><img class="dot"src="dot.png"></a></li>
+                      <li><a id="item-button"><%= sections[i][6] %><img class="dot"src="dot.png"></a></li>
                     </ul>
                   </div>
                 </div> 
-                <div class="column is-6 px-0" id="storage">
+                <div class="column is-6 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
                   
-                  <form action="/items" method="post">
+                  <form action="/items" method="post" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
                     <div class="overflow height-fixed-content">
                       <% for (let j=0; j < item.length; j++) { %>
-                      <% if (sections[i][0] == item[j][2]) { %>
-                      <div id="item">
+                      <% if (sections[i][0] == item[j][1]) { %>
+                      <div id="item" class="<%= sections[i][0].replace(' / ', '').replace(' ', '') %>"> <!--individual item of clothing. displays the name, dependencies and is sorted into a specific location-->
                         <div class="columns is-vcentered">
                           <div class="column is-3 has-text-centered">
                             <p><%= item[j][0] %></p>
                           </div>
                           <div class="column is-7 has-text-centered">
-                            <p><%= item[j][1] %></p>
+                            <p><%= item[j][4] %></p>
                           </div>
                           <div class="column is-2 has-text-centered">
                             <div class="field">
                               <div class="control">
-                                <input type="checkbox" name='send' value = '<%= item[j][3] + "-" + sections[i][0] %>'>
+                                <input type="checkbox" name='send' value = '<%= item[j][2] + "-" + sections[i][0] %>'>
                               </div>
                             </div>
                           </div>
@@ -84,9 +85,9 @@
                       <% } %>
                     </div>
                     <div class="submitBox mr-4">
-                      <div class="columns">
-                        <div class="column is-3"></div>
-                        <div class="column is-9">
+                      <div class="columns is-gapless">
+                        <div class="column is-5 has-text-danger has-text-centered"><p class="warning">Select at least one item</p></div>
+                        <div class="column is-7 ml-0 pl-0">
                           <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="false">Send</button>
                           <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="true">Remove</button>
                         </div>
@@ -97,12 +98,16 @@
               </div>
             </div>
           <% } %>
+          <div id="nav-content" class="pt-2 has-text-centered">
+            No items match description
           </div>
+          </div>
+          
         </div>
       </div>
       <div class="column is-6" id="form2">
-        <div id="form1">
-          <form action="/" method="post">
+        <div id="form1"> <!--clothes input form-->
+          <form action="/" method="post" class="clothes-form-0" onsubmit="return !!(handleData('.clothes-form-0', 'name', '.warning-clothes') & handleData('.clothes-form-0', 'colourOption', '.warning-clothes') & handleData('.clothes-form-0', 'dOption[]', '.warning-clothes'));">
             <div class="is-size-3 has-text-weight-bold">Clothes input form</div>
             <div class="columns">
               <div class="column is-6">
@@ -144,12 +149,13 @@
               </div>
               <div class="column is-2">
                 <button type="submit">Submit</button>
+                <p class="warning-clothes has-text-danger is-size-7">Please completely fill out the form</p>
               </div>
             </div>
           </form>
         </div>
-        <div id="form1">
-          <form action="/family" method="post">
+        <div id="form1"> <!--family form-->
+          <form action="/family" method="post" class="family-form-0" onsubmit="return handleData('.family-form-0', 'member', '.warning-family')">
             <div class="is-size-3 has-text-weight-bold">Family</div>
             <div class="columns">
               <div class="column is-6">
@@ -186,6 +192,7 @@
                     <button type="submit">Submit</button>
                   </div>
                 </div>
+                <p class="warning-family has-text-danger mt-1 is-size-7">Please completely fill out the form</p>
               </div>
             </div>
 
@@ -196,6 +203,12 @@
       </div>
     </div>
   </main>
+
+  <!--allows the frontend js code to use variables passed from the backend-->
+  <div id="data" data-sections="<%= sections.map(subArray => subArray.join('|')).join(',') %>" data-item="<%= item.map(subArray => subArray.join('|')).join(',') %>"></div>
+
+
   <script src="script.js"></script>
+  
 </body>
 </html>

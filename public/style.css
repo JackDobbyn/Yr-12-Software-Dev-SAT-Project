@@ -35,7 +35,7 @@ html, body {
     border-style: solid;
     border-width: thin;
     overflow-y: scroll;
-    
+    display: block;
 }
 
 #left-form {
@@ -45,11 +45,12 @@ html, body {
     
 }
 
-#henry {
+#nav-button, #item-button {
     color: rgb(54, 54, 54);
+    
 }
 
-#henry:hover {
+#nav-button:hover, #item-button:hover {
     color: lightgray;
 }
  
@@ -63,6 +64,7 @@ html, body {
     text-align: left;
     outline: none;
     font-size: 15px;
+    display: block;
 }
   
 .active, #collapsible:hover {
@@ -72,8 +74,8 @@ html, body {
   
 #content {
     padding: 10px;
-    display: none;
     overflow: hidden;
+    display: none;
 }
 
 #sec {
@@ -83,6 +85,14 @@ html, body {
 .caret {
     height: 3%;
     width: 3%;
+}
+
+.dot {
+    height: 2.5%;
+    width: 2.5%;
+    margin-bottom: 2%;
+    margin-left: 3%;
+    display: none;
 }
 
 .caretFlip {
@@ -125,6 +135,7 @@ html, body {
     border-color: #dbdada;
     border-width: thin;
     font-size: 10px;
+    display: block;
 }
 
 .submitBox {
@@ -147,3 +158,30 @@ html, body {
 .overflow {
     overflow-y: scroll;
 }
+
+#nav-content {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+.invisible {
+    display: none;
+}
+
+.warning {
+    font-size: xx-small;
+    margin-top: 13%;
+    visibility: hidden;
+}
+
+.warning-clothes {
+    visibility: hidden;
+}
+
+.warning-family {
+    visibility: hidden;
+}
+

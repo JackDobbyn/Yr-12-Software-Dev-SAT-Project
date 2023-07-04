@@ -1,6 +1,10 @@
 const express = require('express'); //express stuff
 const app = express();
 
+const cron = require('node-cron');
+
+const {sendEmail} = require('./emailService');
+
 
 let ejs = require('ejs');
 app.set('view engine', 'ejs');
@@ -23,28 +27,36 @@ let sections = [
     '0',
     '0',
     '0',
-    ['Work', 'School', 'Other']
+    'Work', 
+    'School', 
+    'Other'
   ],
   [
     'Washing Basket',
     '0',
     '0',
     '0',
-    ['Work', 'School', 'Other']
+    'Work', 
+    'School', 
+    'Other'
   ],
   [
     'Washing Machine',
     '0',
     '0',
     '0',
-    ['Work', 'School', 'Other']
+    'Work', 
+    'School', 
+    'Other'
   ],
   [
     'Dryer / Line',
     '0',
     '0',
     '0',
-    ['Work', 'School', 'Other']
+    'Work', 
+    'School', 
+    'Other'
   ],
 ]
 
@@ -66,14 +78,15 @@ function getFromDatabase() {
   con.query('select id from clothes', function (err, results) {
     if (err) throw err;
     for (let i of results) {
-      con.query(`select name, dependencies, location from clothes where id = ${i.id}`, function (error, result) {
+      con.query(`select name, dependencies, location, colour from clothes where id = ${i.id}`, function (error, result) {
         if (err) throw err;
         let name = result[0].name;
         let dependencies = result[0].dependencies;
         let location = result[0].location;
+        let colour = result[0].colour;
         let numClothes = parseInt(sections[locations?.indexOf(location)][1]);
         sections[locations.indexOf(location)].splice(1, 1, (numClothes + 1).toString());
-        item.push([name, dependencies, location, i.id]);
+        item.push([name, location, i.id, colour, dependencies]);
       });
     }
   });
@@ -147,7 +160,8 @@ function tryItems(req, res) {
     let sentItems = [];
 
     if (!Array.isArray(req.body.send)) { //if only one item is selected then there is no need for a for loop
-      sentItems.push(req.body.send[0]);
+      console.log(req.body.send);
+      sentItems.push(req.body.send.split('-')[0]);
 
     }
     else {
@@ -155,7 +169,7 @@ function tryItems(req, res) {
         sentItems.push(req.body.send[i].split("-")[0]);
       }
     }
-
+    console.log(sentItems);
     var sql = `DELETE FROM clothes WHERE id IN ('${sentItems.join("', '")}');`; // arr('2', '3') => ('23') => ('2', '3') changes from array to sql syntax
     con.query(sql, function (err, result) {
       if (err) throw err;
@@ -173,7 +187,7 @@ function tryItems(req, res) {
 
     if (!Array.isArray(req.body.send)) { //if only one item is selected then there is no need for a for loop
       currentlocation = req.body.send.split("-")[1];
-      sentItems.push(req.body.send[0]);
+      sentItems.push(req.body.send.split('-')[0]);
 
     }
     else {
@@ -188,6 +202,7 @@ function tryItems(req, res) {
     if (locations.indexOf(currentlocation) == 4) {
       currentlocation = 'a';
     }
+    console.log(sentItems);
     var sql = `UPDATE clothes SET location = '${locations[locations.indexOf(currentlocation) + 1]}' WHERE id IN ('${sentItems.join("', '")}');`; // changes from array to sql syntax
     con.query(sql, function (err, result) {
       if (err) throw err;
@@ -230,6 +245,16 @@ function tryFamily(req, res) {
     });
   }, 1000);
 }
+
+
+cron.schedule('50 16 * * *', () => {
+  console.log('email')
+  const recipient = '23dobbja@cgs.vic.edu.au';
+  const subject = 'Your Daily Update';
+  const message = 'Hello! This is your daily update.';
+
+  sendEmail(recipient, subject, message);
+});
 
 app.get("/", displayHomepage);
 app.post("/", updateDetails);
