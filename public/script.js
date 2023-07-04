@@ -59,7 +59,7 @@ function removeRepeats(array) { // removes repeated values [1, 1, 3] => [3]
 
 function handleData(funcForm, funcName, funcError) //prevents forms submitting when nothing is selected
 {
-  console.log(funcName)
+  
   let form_data = new FormData(document.querySelector(funcForm));
   if(!form_data.has(funcName))
   {
@@ -163,9 +163,11 @@ for (let i = 0; i < navButton.length; i++) {
 
 
 function callDateTime() { // gets the current time
-  var currentTime = (new Date()).toLocaleTimeString();
+  currentTime = (new Date()).toLocaleTimeString();
   document.getElementById('watch').textContent = currentTime;
 }
+
+
 
 
 setInterval(function () { callDateTime() }, 1000); //gets the current time every second

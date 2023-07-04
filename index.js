@@ -12,7 +12,8 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const mysql = require('mysql')
+const mysql = require('mysql');
+const moment = require('moment/moment');
 const con = mysql.createConnection({ //connection to database
   host: 'localhost',
   user: 'user1',
@@ -61,9 +62,11 @@ let sections = [
 ]
 
 let item =
-  [
+[
 
-  ]
+]
+
+let emails = []
 
 
 function getFromDatabase() {
@@ -184,6 +187,25 @@ function tryItems(req, res) {
     let locations = ['a', 'Wardrobe', 'Washing Basket', 'Washing Machine', 'Dryer / Line']
     let sentItems = [];
     let currentlocation = ''; //gets the initial location of items
+    
+    console.log(req.body.time);
+    if(req.body.time != undefined) {
+      console.log(req.body.time);
+      console.log(req.body.time.split(':')[0]);
+      console.log(req.body.time.split(':')[1]);
+      let finalTime = moment().add(req.body.time.split(':')[0], 'hours').add(req.body.time.split(':')[1], 'minutes').format('m k D M');
+      console.log(finalTime);
+      emails.push([finalTime, '23dobbja@cgs.vic.edu.au', 'Your daily update', 'Your clothes are finished Washing']);
+      i = emails.length-1;
+      var sql = `INSERT INTO emails (time, address, subject, message) values ("${emails[i][0]}", "${emails[i][1]}", "${emails[i][2]}", "${emails[i][3]}")`; 
+      con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log('table altered');
+      });
+    }
+
+    
+     
 
     if (!Array.isArray(req.body.send)) { //if only one item is selected then there is no need for a for loop
       currentlocation = req.body.send.split("-")[1];
@@ -246,15 +268,22 @@ function tryFamily(req, res) {
   }, 1000);
 }
 
+function send() {
+  for (let i=0; i<emails.length; i++) {
+    cron.schedule(emails[i][0] + ' *', () => {
+      const recipient = emails[i][1];
+      const subject = emails[i][2];
+      const message = emails[i][3];
+  
+      sendEmail(recipient, subject, message);
+      emails.splice(i, 1);
+      i--;
+    });
+    
+  }
+}
 
-cron.schedule('50 16 * * *', () => {
-  console.log('email')
-  const recipient = '23dobbja@cgs.vic.edu.au';
-  const subject = 'Your Daily Update';
-  const message = 'Hello! This is your daily update.';
-
-  sendEmail(recipient, subject, message);
-});
+setInterval(send, 1000);
 
 app.get("/", displayHomepage);
 app.post("/", updateDetails);

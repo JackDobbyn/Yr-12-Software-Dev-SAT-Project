@@ -52,15 +52,26 @@
                   <div class="content">
                     <div class="is-size-7 has-text-weight-bold">Dependencies</div>
                     <ul class="is-size-7" id="one">
-                      <li><a id="item-button"><%= sections[i][4] %><img class="dot"src="dot.png"></a></li>
-                      <li><a id="item-button"><%= sections[i][5] %><img class="dot"src="dot.png"></a></li>
-                      <li><a id="item-button"><%= sections[i][6] %><img class="dot"src="dot.png"></a></li>
+                      <li><a id="item-button"><%= sections[i][4] %></a></li>
+                      <li><a id="item-button"><%= sections[i][5] %></a></li>
+                      <li><a id="item-button"><%= sections[i][6] %></a></li>
                     </ul>
+                    <% if (sections[i][0] == 'Washing Basket') { %> 
+                      <label class="is-size-7 has-text-weight-bold">Wash time:</label>
+                      <input type="text"  name="time" form="items-form-<%= i %>" class="time" placeholder=" 5:35">
+                      <label class="is-size-7 has-text-weight-bold">hrs</label>
+  
+                    <% }else if(sections[i][0] == 'Washing Machine'){ %>
+                      <label class="is-size-7 has-text-weight-bold">Dry time:</label>
+                      <input type="text"  name="time" form="items-form-<%= i %>" class="time" placeholder=" 5:35">
+                      <label class="is-size-7 has-text-weight-bold">hrs</label>
+                    <% } %>
+                    
                   </div>
                 </div> 
                 <div class="column is-6 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
                   
-                  <form action="/items" method="post" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
+                  <form action="/items" method="post"  id="items-form-<%= i %>" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
                     <div class="overflow height-fixed-content">
                       <% for (let j=0; j < item.length; j++) { %>
                       <% if (sections[i][0] == item[j][1]) { %>
