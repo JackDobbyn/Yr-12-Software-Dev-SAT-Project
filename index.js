@@ -16,14 +16,19 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const mysql = require('mysql');
 const moment = require('moment/moment');
-const con = mysql.createConnection({ //connection to database
-  host: 'localhost',
-  user: 'user1',
-  password: "0000",
-  database: "mydb"
-})
+
+let mysql = require('mysql');
+const con = mysql.createPool({
+  connectionLimit: 10,
+  user: 'root',
+  password: 'Harperlee21!',
+  database: 'mydb',
+  host: '34.129.220.36'
+});
+
+
+
 
 
 
