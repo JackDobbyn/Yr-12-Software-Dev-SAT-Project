@@ -18,14 +18,15 @@ app.use(express.json());
 
 const moment = require('moment/moment');
 
-let mysql = require('mysql');
-const con = mysql.createPool({
-  connectionLimit: 10,
-  user: 'root',
-  password: 'Harperlee21!',
+const { Pool } = require('pg');
+const con = new Pool({
+  user: 'user1',
+  password: '0fjmiVFAl6p8okVPNze0boXrXlnCBbmS',
   database: 'mydb',
-  host: '34.129.220.36'
+  host: 'dpg-cijt0u6nqql0l1u2s930-a',
+  port: 5432
 });
+
 
 
 

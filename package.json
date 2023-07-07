@@ -10,6 +10,7 @@
     "mysql2": "^3.2.4",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.3",
+    "pg": "^8.11.1",
     "ws": "^8.13.0"
   },
   "name": "yr-12-software-dev-sat-project",
