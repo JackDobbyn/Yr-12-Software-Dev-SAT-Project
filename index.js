@@ -138,6 +138,22 @@ function getFromDatabase(req, res) {
 }
 
 function displayHomepage(req, res) {
+
+  var sql = 'CREATE TABLE details (login_id INTEGER PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255), hash VARCHAR(255));';
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log('table altered');
+  });
+  var sql = 'CREATE TABLE emails (email_id INTEGER PRIMARY KEY AUTO_INCREMENT, time VARCHAR(255), address VARCHAR(255), subject varchar(255), message varchar(255), location varchar(255), washdryLength varchar(255), user varchar(255));';
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log('table altered');
+  });
+  var sql = 'CREATE TABLE clothes (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), colour VARCHAR(255), location varchar(255), dependencies varchar(255), user varchar(255));';
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log('table altered');
+  });
   if (loginStatus) {
     getFromDatabase(req, res);
     setTimeout(function () {
