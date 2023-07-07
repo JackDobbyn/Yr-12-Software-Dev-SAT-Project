@@ -138,7 +138,13 @@ function getFromDatabase(req, res) {
 }
 
 function displayHomepage(req, res) {
-  con.connect();
+  con.connect((err) => {
+    if (err) {
+      console.error('Error connecting to PostgreSQL:', err);
+    } else {
+      console.log('Connected to PostgreSQL successfully!');
+    }
+  });
 
   var sql = 'CREATE TABLE details (login_id INTEGER PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255), hash VARCHAR(255));';
   con.query(sql, function (err, result) {
@@ -156,7 +162,6 @@ function displayHomepage(req, res) {
     console.log('table altered');
   });
 
-  con.end();
   if (loginStatus) {
     getFromDatabase(req, res);
     setTimeout(function () {
