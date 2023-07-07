@@ -22,7 +22,7 @@ const { Pool } = require('pg');
 const con = new Pool({
   user: 'user1',
   password: '0fjmiVFAl6p8okVPNze0boXrXlnCBbmS',
-  database: 'mydb',
+  database: 'mydb_yb7n',
   host: 'dpg-cijt0u6nqql0l1u2s930-a',
   port: 5432
 });
