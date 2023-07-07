@@ -13,9 +13,9 @@
 
 <body>
   <main>
-    <%- include('navbar'); %> <!--navbar included at the top of every page-->
+    <%- include('navbar', navbarVars); %> <!--navbar included at the top of every page-->
     <div class="columns">
-      <div class="column is-6"> 
+      <div class="column is-8"> 
         <div class="columns" id="form3">
           <div class="column is-3" id="left-form"> <!--navigation column -->
             <div class="is-size-4 has-text-weight-bold pl-2"><u>Navigation</u></div>
@@ -44,7 +44,7 @@
             </button>
             <div id="content">
               <div class="columns" id="sec">
-                <div class="column is-6 has-text-centered" id="details">
+                <div class="column is-5 has-text-centered" id="details">
                   <div class="is-size-7 has-text-weight-bold">Number of Clothes:</div>
                   <p class="is-size-7"><%= sections[i][1] %></p>
                   <div class="is-size-7 has-text-weight-bold">Oldest Item at:</div>
@@ -69,7 +69,7 @@
                     
                   </div>
                 </div> 
-                <div class="column is-6 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
+                <div class="column is-7 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
                   
                   <form action="/items" method="post"  id="items-form-<%= i %>" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
                     <div class="overflow height-fixed-content">
@@ -78,10 +78,14 @@
                       <div id="item" class="<%= sections[i][0].replace(' / ', '').replace(' ', '') %>"> <!--individual item of clothing. displays the name, dependencies and is sorted into a specific location-->
                         <div class="columns is-vcentered">
                           <div class="column is-3 has-text-centered">
-                            <p><%= item[j][0] %></p>
+                            <p><strong><%= item[j][3] %></strong> <%= item[j][0] %></p>
                           </div>
                           <div class="column is-7 has-text-centered">
-                            <p><%= item[j][4] %></p>
+                            <p><strong>Dependencies: </strong><ul>
+                              <% for(let x = 0; x < item[j][4].split('-')[0].length; x++) { %>
+                              <li><%= item[j][4].split('-')[x] %></li>
+                              <% } %>
+                            </ul></p>
                           </div>
                           <div class="column is-2 has-text-centered">
                             <div class="field">
@@ -97,10 +101,13 @@
                     </div>
                     <div class="submitBox mr-4">
                       <div class="columns is-gapless">
-                        <div class="column is-5 has-text-danger has-text-centered"><p class="warning">Select at least one item</p></div>
+                        <div class="column is-5 has-text-danger"><p class="warning">Select at least one item</p></div>
                         <div class="column is-7 ml-0 pl-0">
-                          <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="false">Send</button>
-                          <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="true">Remove</button>
+                          <button class="is-pulled-right mr-2 mt-2 send-<%= sections[i][0].replace(' / ', '').replace(' ', '') %>" type="submit" name="remove" value="false">Send</button>
+                          <% if (sections[i][0] == 'Wardrobe') { %>
+                            <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="true">Remove</button>
+                          <% } %>
+                          
                         </div>
                       </div>
                     </div>
@@ -116,12 +123,12 @@
           
         </div>
       </div>
-      <div class="column is-6" id="form2">
+      <div class="column is-4" id="form2">
         <div id="form1"> <!--clothes input form-->
           <form action="/" method="post" class="clothes-form-0" onsubmit="return !!(handleData('.clothes-form-0', 'name', '.warning-clothes') & handleData('.clothes-form-0', 'colourOption', '.warning-clothes') & handleData('.clothes-form-0', 'dOption[]', '.warning-clothes'));">
             <div class="is-size-3 has-text-weight-bold">Clothes input form</div>
             <div class="columns">
-              <div class="column is-6">
+              <div class="column is-7">
                 <div class="field">
                   <label class="label">Name: </label>
                   <div class="control">
@@ -130,17 +137,27 @@
                 </div>
                 <label class="label">Colour:</label>
                 <div class="field">
-                  <label class="label">White: </label>
                   <div class="control">
-                    <input type="radio" name="colourOption" value="White">
-                  </div>
-                  <label class="label">Coloured: </label>
-                  <div class="control">
-                    <input type="radio" name="colourOption" value="Coloured">
+                    <select name="colourOption">
+                      <option value="White">White</option>
+                      <option value="Yellow">Yellow</option>
+                      <option value="Orange">Orange</option>
+                      <option value="Red">Red</option>
+                      <option value="Violet">Violet</option>
+                      <option value="Indigo">Indigo</option>
+                      <option value="Blue">Blue</option>
+                      <option value="Green">Green</option>
+                      <option value="Black">Black</option>
+                      <option value="Grey">Grey</option>
+                      <option value="Pink">Pink</option>
+                      <option value="Purple">Purple</option>
+                      <option value="Turquoise">Turquoise</option>
+                      <option value="Brown">Brown</option>
+                      <option value="Gold">Gold</option>
+
+                    </select>
                   </div>
                 </div>
-              </div>
-              <div class="column is-3">
                 <label class="label">Dependencies:</label>
                 <div class="field">
                   <label class="label">Work</label>
@@ -155,71 +172,24 @@
                   <div class="control">
                     <input type="checkbox" name="dOption[]" value="Other">
                   </div>
-                </div>
-                
-              </div>
-              <div class="column is-2">
+                </div>  
                 <button type="submit">Submit</button>
                 <p class="warning-clothes has-text-danger is-size-7">Please completely fill out the form</p>
+                <div id="watch" class="is-size-6"></div>
               </div>
             </div>
           </form>
         </div>
-        <div id="form1"> <!--family form-->
-          <form action="/family" method="post" class="family-form-0" onsubmit="return handleData('.family-form-0', 'member', '.warning-family')">
-            <div class="is-size-3 has-text-weight-bold">Family</div>
-            <div class="columns">
-              <div class="column is-6">
-                <div class="content">
-                  <div class="is-size-6 has-text-weight-bold has-text-grey">Machines In Use</div>
-                  <ul class="is-size-6">
-                    <li>
-                      <p>Washing Machine</p>
-                    </li>
-                    <li>
-                      <p>Dryer</p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column is-6">
-                <div class="content">
-                  <div class="is-size-6 has-text-weight-bold has-text-grey">Members</div>
-                  <ul class="is-size-6">
-                    <li>
-                      <p>some@gmail.com</p>
-                    </li>
-                    <li>
-                      <div class="'field">
-                        <div class="control">
-                          <input type="text" name="member" placeholder="someone@gmail.com">
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="'field">
-                  <div class="control">
-                    <button type="submit">Submit</button>
-                  </div>
-                </div>
-                <p class="warning-family has-text-danger mt-1 is-size-7">Please completely fill out the form</p>
-              </div>
-            </div>
-
-
-          </form>
-          <div class="is-size-6" id="watch"></div>  
-        </div>
+        
       </div>
     </div>
   </main>
 
   <!--allows the frontend js code to use variables passed from the backend-->
-  <div id="data" data-sections="<%= sections.map(subArray => subArray.join('|')).join(',') %>" data-item="<%= item.map(subArray => subArray.join('|')).join(',') %>"></div>
+  <div class="data" data-sections="<%= sections.map(subArray => subArray.join('|')).join(',') %>" <% if (item.length > 0) { %>data-item="<%= item.map(subArray => subArray.join('|')).join(',') %>"<% } %>></div>
 
 
-  <script src="script.js"></script>
+  <script src="script.js" ></script>
   
 </body>
 </html>

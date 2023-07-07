@@ -6,7 +6,11 @@
     </div>
     <div class="navbar-menu">
         <div class="navbar-end">
+            <% if(!navbarVars.loginStatus) { %>
             <a class="navbar-item" href="/login">Login</a>
+            <% } else { %>
+            <a class="navbar-item" href="/account">Account</a>
+            <% } %>
         </div>
     </div>
 </nav>

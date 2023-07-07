@@ -11,7 +11,30 @@
 
 <body>
 
-    <%- include('navbar'); %>
+    <%- include('navbar', navbarVars); %>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-6">
+                    <div id="box">
+                        <form action="/account" method="post">
+                            <div class="title size-10 has-text-centered">Account</div>
+                            <div class="size-5 has-text-centered"><%= user %></div>
+                            <br>
+                            
+                            <div class="field has-text-centered">
+                                <div class="control">
+                                    <button class="button has-background-danger-dark has-text-light" type="submit" name="logout" value="false">Delete Account</button>
+                                    <button class="button" type="submit" name="logout" value="true">Log Out</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="script.js"></script>
 

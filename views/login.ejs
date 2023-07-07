@@ -11,7 +11,7 @@
 
 <body>
 
-    <%- include('navbar'); %>
+    <%- include('navbar', navbarVars); %>
 
     <section class="section">
         <div class="container">
@@ -20,23 +20,25 @@
                     <div id="box">
                         <form action="/login" method="post">
                             <div class="title size-10 has-text-centered">Login</div>
+                            <div class="size-5 has-text-centered has-text-danger"><%= loginMessage %></div>
                             <div class="field">
                                 <label class="label">Email: </label>
                                 <div class="control">
-                                    <input class="input" type="text" placeholder="something@gmail.com">
+                                    <input class="input" type="text" placeholder="something@gmail.com"  name="email">
                                 </div>
                             </div>
 
                             <div class="field">
                                 <label class="label">Password: </label>
                                 <div class="control">
-                                    <input class="input" type="text" placeholder="e9urhau607">
+                                    <input class="input" type="text" placeholder="e9urhau607" name="pass">
                                 </div>
                             </div>
 
                             <div class="field">
                                 <div class="control">
-                                    <button class="button">Submit</button>
+                                    <button class="button" type="submit" name="login" value="true">Login</button>
+                                    <button class="button" type="submit" name="login" value="false">Create Account</button>
                                 </div>
                             </div>
                         </form>

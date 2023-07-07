@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (recipient, subject, message) => {
-    console.log('processing email...')
+    console.log('processing email...');
     try {
       // Create a transporter with your SMTP configuration
       const transporter = nodemailer.createTransport({
@@ -9,14 +9,14 @@ const sendEmail = async (recipient, subject, message) => {
         port: 2525,
         secure: false,
         auth: {
-          user: 'jackdobbyn@outlook.com',
-          pass: 'BE9DBBF4C73D21E05E6D414D50D291D91709',
+          user: 'laundryhand32@gmail.com',
+          pass: '986EB23FDDCE9F3EFFC5507A3BE5E72F6196',
         },
       });
   
       // Define the email options
       const mailOptions = {
-        from: 'jackdobbyn@outlook.com',
+        from: 'laundryhand32@gmail.com',
         to: recipient,
         subject: subject,
         text: message,

@@ -12,7 +12,7 @@ html, body {
     border-style: solid;
     padding-left: 4%;
     padding-top: 1%;
-    height: 46.6vh;
+    height: 93.2vh;
     border-width: thin;
     
 }
@@ -175,6 +175,7 @@ html, body {
     font-size: xx-small;
     margin-top: 13%;
     visibility: hidden;
+    text-align: right;
 }
 
 .warning-clothes {
