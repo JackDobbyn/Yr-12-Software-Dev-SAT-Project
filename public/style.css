@@ -12,7 +12,7 @@ html, body {
     border-style: solid;
     padding-left: 4%;
     padding-top: 1%;
-    height: 93.2vh;
+    height: 93.5vh;
     border-width: thin;
     
 }
@@ -42,7 +42,7 @@ html, body {
     border-color: rgb(54, 54, 54);
     border-style: solid;
     border-width: thin;
-    
+    background-color: #FBF3D5;
 }
 
 #nav-button, #item-button {
@@ -51,11 +51,18 @@ html, body {
 }
 
 #nav-button:hover, #item-button:hover {
-    color: lightgray;
+    color: rgb(180, 208, 228);
 }
+
+.underline {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
  
 #collapsible {
-    background-color: #eee;
+    background-color: #e9eff4;
     color: black;
     cursor: pointer;
     padding: 18px;
@@ -68,7 +75,7 @@ html, body {
 }
   
 .active, #collapsible:hover {
-    background-color: #ccc;
+    background-color: #d4d9dd;
 }
   
   
@@ -100,10 +107,12 @@ html, body {
 }
 
 #details {
-    border-color: #dbdada;
+    /* border-color: #dbdada; */
+    border-color: black;
     border-style: solid;
     border-width: thin;
     height: 99.1%;
+    background-color: #fcf8ea;
 }
 
 
@@ -114,16 +123,18 @@ html, body {
 .height-fixed-content {
     height: 200px;
     border-style: solid;
-    border-color: #dbdada;
+    /* border-color: #dbdada; */
+    border-color: black;
     border-width: thin;
 }
 
 #storage {
-    padding-top: 2px;
+    padding-top: 1px;
+    border-color: black;
 }
 
 #item {
-    background-color: rgb(253, 253, 253);
+    background-color: #f3f9fc;
     color: black;
     padding: 15px;
     margin-bottom: 2px;
@@ -132,22 +143,30 @@ html, body {
     margin-top: 1px;
     width: calc(100% - 2px); 
     border-style: solid;
-    border-color: #dbdada;
-    border-width: thin;
+    border-color: #122849;
+    border-width: 1.4px;
+    border-radius: 3.125px;
     font-size: 10px;
     display: block;
+}
+
+#item:hover {
+    background-color: #def2ff;
+    border-color: #23539a;
 }
 
 .submitBox {
     background-color: rgb(253, 253, 253);
     color: black;
-    height: 45.5px;
+    height: 47px;
     padding-top: 2px;
     width: calc(100% - 2px); 
     border-style: solid;
-    border-color: #dbdada;
+    /* border-color: #dbdada; */
+    border-color: black;
     border-width: thin;
     font-size: 10px;
+
     
 }
 
@@ -172,8 +191,8 @@ html, body {
 }
 
 .warning {
-    font-size: xx-small;
-    margin-top: 13%;
+    font-size: x-small;
+    margin-top: 8%;
     visibility: hidden;
     text-align: right;
 }
@@ -191,4 +210,3 @@ html, body {
 .time {
     width: 20%;
 }
-

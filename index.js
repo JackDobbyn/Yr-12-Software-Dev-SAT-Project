@@ -4,8 +4,8 @@ const app = express();
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8080 });
 
-const cron = require('node-cron');
-const bcrypt = require('bcrypt');
+const cron = require('node-cron'); //library for shceduling jobs
+const bcrypt = require('bcrypt'); //library for hashing passwords
 
 const { sendEmail } = require('./emailService');
 
@@ -16,15 +16,16 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const moment = require('moment/moment');
+const moment = require('moment/moment'); //moment; time based library
 
-const { Pool } = require('pg');
-const con = new Pool({
+const mysql = require('mysql');  //sql
+
+const con = mysql.createConnection({
+  host: 'localhost', 
   user: 'user1',
-  password: '0fjmiVFAl6p8okVPNze0boXrXlnCBbmS',
-  database: 'mydb_yb7n',
-  url: 'postgres://user1:0fjmiVFAl6p8okVPNze0boXrXlnCBbmS@dpg-cijt0u6nqql0l1u2s930-a.oregon-postgres.render.com/mydb_yb7n'
-});
+  password: '0000',
+  database: 'mydb', 
+})
 
 
 
@@ -32,7 +33,8 @@ const con = new Pool({
 
 
 
-let sections = [
+
+let sections = [ //template for html
   [
     'Wardrobe',
     '0',
@@ -71,44 +73,42 @@ let sections = [
   ],
 ];
 
-let item = [];
-let user;
+let item = []; //item array that gets filled with item details from database
+let user; //user thats logged in
+let washLength; //time that the wash takes
+let dryLength; //time that the dry takes
 
-let locationsInUse = {
+let locationsInUse = { //variable for whether any location is in use
   WashingMachine: 'false',
   DryerLine: 'false'
 };
 
-let loginStatus = false;
+let loginStatus = false; 
 
-function generateSecretKey() {
-  const length = 32;
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
-  let secretKey = '';
+function sendData(msg) { //sends data to the backend js file
 
-  for (let i = 0; i < length; i++) {
-    const randomIndex = crypto.randomInt(0, characters.length);
-    secretKey += characters.charAt(randomIndex);
+  let data = {
+    loc1: locationsInUse['WashingMachine'],
+    loc2: locationsInUse['DryerLine'],
+    message : msg
   }
-
-  return secretKey;
-}
-
-function sendData(data) {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(data));
     }
   });
 }
-function getFromDatabase(req, res) {
+
+
+function getFromDatabase(req, res) { //gets data from database
+  
   item = [];
   let locations = ['Wardrobe', 'Washing Basket', 'Washing Machine', 'Dryer / Line'];
   for (let i = 0; i < sections.length; i++) {
     sections[i].splice(1, 1, '0');
   }
 
-
+  // getting clothes details from database
   con.query(`select id from clothes where user = '${user}'`, function (err, results) {
     if (err) throw err;
     for (let i of results) {
@@ -123,13 +123,25 @@ function getFromDatabase(req, res) {
         item.push([name, location, i.id, colour, dependencies]);
       });
     }
-    var sql = `select email_id, time, address, subject, message, location from emails where user = '${user}'`; //sql query
+    //getting email details from database
+    var sql = `select email_id, time, address, subject, message, location, washdryLength from emails where user = '${user}'`; //sql query
     con.query(sql, function (err, resul) {
       if (err) throw err;
       for (let j = 0; j < resul.length; j++) {
         send(resul[j].time, resul[j].address, resul[j].subject, resul[j].message, resul[j].email_id, resul[j].location.replace(' / ', '').replace(' ', ''));
+        if(resul[j].location.replace(' / ', '').replace(' ', '') == 'WashingMachine') {
+          washLength == resul[j].washdryLength;
+          setTimeout(function () {sendData('wash')}, 1200);
+        } else if(resul[j].location.replace(' / ', '').replace(' ', '') == 'DryerLine') {
+          dryLength == resul[j].washdryLength;
+          setTimeout(function () {sendData('dry')}, 1200);
+        }
+
         locationsInUse[resul[j].location.replace(' / ', '').replace(' ', '')] = 'true';
+
       }
+      console.log('its me')
+      setTimeout(function () {sendData()}, 1200);
     });
   });
 
@@ -137,30 +149,7 @@ function getFromDatabase(req, res) {
 }
 
 function displayHomepage(req, res) {
-  con.connect((err) => {
-    if (err) {
-      console.error('Error connecting to PostgreSQL:', err);
-    } else {
-      console.log('Connected to PostgreSQL successfully!');
-    }
-  });
-
-  var sql = 'CREATE TABLE details (login_id INTEGER PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255), hash VARCHAR(255));';
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log('table altered');
-  });
-  var sql = 'CREATE TABLE emails (email_id INTEGER PRIMARY KEY AUTO_INCREMENT, time VARCHAR(255), address VARCHAR(255), subject varchar(255), message varchar(255), location varchar(255), washdryLength varchar(255), user varchar(255));';
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log('table altered');
-  });
-  var sql = 'CREATE TABLE clothes (id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), colour VARCHAR(255), location varchar(255), dependencies varchar(255), user varchar(255));';
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log('table altered');
-  });
-
+  //if logged in display homepage. if not display the login page
   if (loginStatus) {
     getFromDatabase(req, res);
     setTimeout(function () {
@@ -171,10 +160,12 @@ function displayHomepage(req, res) {
         dryLocation: locationsInUse['DryerLine'],
         navbarVars: {
           loginStatus: loginStatus
-        }
+        },
+        washLength: washLength,
+        dryLength: dryLength
+        
       });
     }, 1000);
-    setTimeout(function () { sendData(locationsInUse) }, 1100);
   }
   else {
     res.render("login", {
@@ -212,6 +203,7 @@ function updateDetails(req, res) {
   let dependencies = req.body.dOption?.join("-");
   let id = 0;
 
+  //inserts  clothes into database
   let actions =
   [`INSERT INTO clothes (name, colour, dependencies, location, user) values ('${name}', '${colour}', '${dependencies}', '${location}', '${user}')`]; //array of sql queries
 
@@ -232,28 +224,26 @@ function updateDetails(req, res) {
       dryLocation: locationsInUse['DryerLine'],
       navbarVars: {
         loginStatus: loginStatus
-      }
+      },
+      washLength: washLength,
+      dryLength: dryLength
     });
   }, 1000);
-  setTimeout(function () { sendData(locationsInUse) }, 1100);
 }
 
 function updateLogin(req, res) {
-  //1
+  let emailExists;
   if (req.body.login == 'true') {
-    //2
     //login to account
     let email = req.body.email;
     var sql = `SELECT hash FROM details WHERE email = '${email}'`;
     con.query(sql, function (err, result) {
-      //4
       if (err) throw err;
       let hashed_password = result[0]?.hash;
 
       let pass = req.body.pass;
       if (hashed_password != undefined && pass != undefined) {
         bcrypt.compare(pass, hashed_password, function (err, isMatch) {
-          //5
           if (err) {
             console.error(err);
             return;
@@ -261,21 +251,20 @@ function updateLogin(req, res) {
 
           if (isMatch) {
             // Password is correct
-            //6
             loginStatus = true;
             console.log('login successful');
 
             user = email;
           } else {
             // Password is incorrect
-            sendData(false);
+            sendData('false');
           }
         });
       }
       else {
 
         // Password is incorrect
-        sendData(false);
+        sendData('false');
       }
 
 
@@ -285,54 +274,87 @@ function updateLogin(req, res) {
     // create account
     let email = req.body.email;
     let pass = req.body.pass;
-    let saltRounds = 10;
+    let saltRounds = 10; //amount of time used to hash passwords
 
+    //hash password
     bcrypt.hash(pass, saltRounds, function (err, hashed_password) {
       if (err) {
         console.error(err);
         return;
       }
 
-      var sql = `INSERT INTO details (email, hash) values ("${email}", "${hashed_password}")`;
+      var sql = 'SELECT email from details';
       con.query(sql, function (err, result) {
         if (err) throw err;
-        console.log('table altered');
-      });
-    });
-    loginStatus = true;
-    user = email;
+        
+        console.log(result.length);
+        
+        for (let i = 0; i < result.length; i++) {
+          console.log(result[i]?.email);
+          if (result[i]?.email == email) {
+            emailExists = true;
+          }
+        }
 
-  }
-  setTimeout(function (){if (loginStatus) {
-    getFromDatabase();
-    setTimeout(function () {
-      res.render("index", {
-        sections: sections,
-        item: item,
-        washLocation: locationsInUse['WashingMachine'],
-        dryLocation: locationsInUse['DryerLine'],
-        navbarVars: {
-          loginStatus: loginStatus
+        if (!emailExists) {
+          loginStatus = true;
+          user = email;
+        }
+        else {  
+          loginStatus = false;
+        }
+        console.log(emailExists);
+        if (!emailExists) {
+          var sql = `INSERT INTO details (email, hash) values ("${email}", "${hashed_password}")`;
+          con.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log('table altered');
+          });  
         }
       });
-    }, 1000);
-    setTimeout(function () { sendData(locationsInUse) }, 1100);
-  } else {  
-    //3
-    res.render("login", {
-      navbarVars: {
-        loginStatus: loginStatus
-      },
-      loginMessage: 'Username or password is incorrect. Please try again.'
     });
-  }}, 1000);
+    
+    
+
+  }
+  setTimeout(function (){
+    if (loginStatus) {
+      getFromDatabase();
+      setTimeout(function () {
+        res.render("index", {
+          sections: sections,
+          item: item,
+          washLocation: locationsInUse['WashingMachine'],
+          dryLocation: locationsInUse['DryerLine'],
+          navbarVars: {
+            loginStatus: loginStatus
+          },
+          washLength: washLength,
+          dryLength: dryLength
+        });
+      }, 1000);
+      setTimeout(function () { sendData(locationsInUse) }, 1200);
+    }else if(emailExists){  
+      res.render("login", {
+        navbarVars: {
+          loginStatus: loginStatus
+        },
+        loginMessage: 'Email already exists. Please enter a valid email'
+      });
+    }else {  
+      res.render("login", {
+        navbarVars: {
+          loginStatus: loginStatus
+        },
+        loginMessage: 'Username or password is incorrect. Please try again.'
+      });
+    }
+  }, 1000);
 }
 
 function updateAccount(req, res) {
-  console.log('woman');
   if (req.body.logout == 'true') {
     //logout
-    console.log('hey');
     user = '';
     loginStatus = false;
   }
@@ -378,6 +400,7 @@ function updateAccount(req, res) {
 
 function tryItems(req, res) {
   if (req.body.remove == 'true' && req.body.send != undefined) {
+    //remove items
     let sentItems = [];
 
     if (!Array.isArray(req.body.send)) { //if only one item is selected then there is no need for a for loop
@@ -400,6 +423,7 @@ function tryItems(req, res) {
 
   }
   else if (req.body.send?.length >= 1 && req.body.remove == 'false') {
+    //send items to next location
     let locations = ['a', 'Wardrobe', 'Washing Basket', 'Washing Machine', 'Dryer / Line']
     let sentItems = [];
     let currentlocation = ''; //gets the initial location of items
@@ -422,12 +446,14 @@ function tryItems(req, res) {
     }
 
     if (req.body.time != undefined) {
-      let keyWord = ''
+      let keyWord = '';
       let loc = locations[locations.indexOf(currentlocation) + 1];
       if(loc == 'Washing Machine') {
         keyWord = 'washing';
+        washLength = req.body.time;
       }else {
         keyWord = 'drying';
+        dryLength = req.body.time;
       }
       
       let finalTime = moment().add(req.body.time.split(':')[0], 'hours').add(req.body.time.split(':')[1], 'minutes').format('m k D M');
@@ -442,7 +468,7 @@ function tryItems(req, res) {
         finalTime = finalTimeSplit.join(' ');
       }
 
-      var sql = `INSERT INTO emails (time, address, subject, message, location, user) values ("${finalTime}", "${address}", "${subject}", "${message}", "${loc}", "${user}")`;
+      var sql = `INSERT INTO emails (time, address, subject, message, location, user, washdryLength) values ("${finalTime}", "${address}", "${subject}", "${message}", "${loc}", "${user}", "${req.body.time}")`;
       con.query(sql, function (err, result) {
         if (err) throw err;
         console.log('table altered');
@@ -471,73 +497,54 @@ function tryItems(req, res) {
       dryLocation: locationsInUse['DryerLine'],
       navbarVars: {
         loginStatus: loginStatus
-      }
-    });
-  }, 1000);
-  setTimeout(function () { sendData(locationsInUse) }, 1100);
-
-}
-
-function tryFamily(req, res) {
-  let email = req.body.member;
-
-  if (req.body.member.length > 0) {
-
-    console.log("Connected!");
-    var sql = `INSERT INTO family (email, user) values ('${email}', '${user}')`; //sql query
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      console.log('table altered');
-    });
-  }
-
-
-  getFromDatabase();
-  setTimeout(function () {
-    res.render("index", {
-      sections: sections,
-      item: item,
-      washLocation: locationsInUse['WashingMachine'],
-      dryLocation: locationsInUse['DryerLine'],
-      navbarVars: {
-        loginStatus: loginStatus
-      }
+      },
+      washLength: washLength,
+      dryLength: dryLength
     });
   }, 1000);
   setTimeout(function () { sendData(locationsInUse) }, 1100);
 }
-
-
+//schedules emails to be sent
 function send(t, a, s, m, i, l) {
   cron.schedule(t + ' *', () => {
     let recipient = a;
     let subject = s;
     let message = m;
-    let emailId = i;
     let location = l;
 
 
-    sendEmail(recipient, subject, message); //asnychronous function in another script
-
-    var sql = `DELETE FROM emails WHERE email_id=${emailId} AND user = '${user}'`;
-    con.query(sql, function (err, result) { //deletes email details from sql table 
-      if (err) throw err;
-      console.log('items removed!');
-    });
+    sendEmail(recipient, subject, message); //asnychronous function in another script 
 
     locationsInUse[location] = 'false';
-    setTimeout(function () { sendData(locationsInUse) }, 1100);
+    setTimeout(function () { sendData() }, 1100);
 
   });
+  var sql = `DELETE FROM emails WHERE email_id=${i} AND user = '${user}'`;
+  con.query(sql, function (err, result) { //deletes email details from sql table 
+    if (err) throw err;
+    console.log('items removed!');
+  });  
 }
 
+//recieves data from the frontend
+function stopTimers (req, res) {
+  console.log('hello');
+  console.log(req.body.data);
+  if (req.body.data == 'wash done') {
+    
+    locationsInUse['WashingMachine'] = 'false';
+
+  } else if (req.body.data == 'dry done') {
+    locationsInUse['DryerLine'] = 'false';
+
+  }
+}
 
 app.get("/", displayHomepage);
 app.post("/", updateDetails);
 
 app.post("/items", tryItems);
 
-app.post("/family", tryFamily);
 
 
 
@@ -546,5 +553,7 @@ app.post("/login", updateLogin);
 
 app.get("/account", account);
 app.post("/account", updateAccount);
+
+app.post("/updateTimer", stopTimers);
 
 app.listen(3000);

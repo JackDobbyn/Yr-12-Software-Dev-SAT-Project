@@ -1,16 +1,17 @@
 const nodemailer = require('nodemailer');
 
+//sends an email
 const sendEmail = async (recipient, subject, message) => {
     console.log('processing email...');
     try {
-      // Create a transporter with your SMTP configuration
+      //create connection with smtp provider
       const transporter = nodemailer.createTransport({
         host: 'smtp.elasticemail.com',
         port: 2525,
         secure: false,
         auth: {
           user: 'laundryhand32@gmail.com',
-          pass: '986EB23FDDCE9F3EFFC5507A3BE5E72F6196',
+          pass: '986EB23FDDCE9F3EFFC5507A3BE5E72F6196', //you better not login to my account
         },
       });
   

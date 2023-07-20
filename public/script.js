@@ -9,9 +9,19 @@ const sendWb = document.querySelector('.send-WashingBasket');
 const sendWm = document.querySelector('.send-WashingMachine');
 const sendD = document.querySelector('.send-DryerLine');
 
+const removeWb = document.querySelector('.remove-WashingBasket');
+const removeWm = document.querySelector('.remove-WashingMachine');
+const removeD = document.querySelector('.remove-DryerLine');
+
 const dataElement = document.querySelector('.data');
-const sections = dataElement.getAttribute('data-sections').split(',').map(subArray => subArray.split('|'));
 const item = dataElement.getAttribute('data-item')?.split(',').map(subArray => subArray.split('|'));
+
+const washInput = document.querySelector('.wash-input');
+const dryInput = document.querySelector('.dry-input');
+
+const washTime = document.querySelector('.wash-time');
+const dryTime = document.querySelector('.dry-time');
+
 
 let washLocation;
 let dryLocation;
@@ -23,29 +33,30 @@ let arr2 = ['wItem', 'wbItem', 'wmItem', 'dItem'];
 
 const socket = new WebSocket('ws://localhost:8080');
 
-socket.onmessage = (event) => {
-  if (typeof JSON.parse(event.data) == 'object') {
-    const locationsInUse = JSON.parse(event.data);
-    washLocation = locationsInUse['WashingMachine'];
-    dryLocation = locationsInUse['DryerLine'];
-    disableButtons();
-  } 
-  else
-  {
-    let loginStatus = JSON.parse(event.data);
-    console.log(loginStatus);
+socket.onmessage = (event) => { //recieves data from the backend using sockets
+  const data = JSON.parse(event.data);
+  washLocation = data['loc1'];
+  dryLocation = data['loc2'];
+  let message = data['message'];
+
+  if (message == 'wash') {
+    let intervalId = setInterval(function () {changeWashDryTime(document.querySelector('.wash-time'), intervalId, 'wash')}, 60000);
+  }else if (message == 'dry') {
+    let intervalId = setInterval(function () {changeWashDryTime(document.querySelector('.dry-time'), intervalId, 'dry')}, 60000);
   }
+
+  disableButtons();
+   
 };
 
 
 
-let itemLocations = {
+let itemLocations = { //allows you to sub in strings to the itemlocations object to remove the need for hardcoded if statements
   wItem: document.querySelectorAll('.Wardrobe'),
   wbItem: document.querySelectorAll('.WashingBasket'),
   wmItem: document.querySelectorAll('.WashingMachine'),
   dItem: document.querySelectorAll('.DryerLine')
 }
-
 
 let locations = {
   Wardrobe: [[0]],
@@ -54,23 +65,63 @@ let locations = {
   DryerLine: [[0]]
 }
 
-let navFilter = [];
+let navFilter = []; //array of filters
 
 
+//disables buttons depending on which locations are in use
 function disableButtons() {
   if (washLocation == 'true') {
     sendWb.setAttribute('disabled', true);
     sendWm.setAttribute('disabled', true);
+    removeWb.setAttribute('disabled', true);
+    removeWm.setAttribute('disabled', true);
+    washInput.style.display =  'none';
+    washTime.style.display =  'block';
+    dryInput.style.display =  'none';
+    dryTime.style.display = 'none'
   }
   else if (dryLocation == 'true') {
     sendD.setAttribute('disabled', true);
     sendWm.setAttribute('disabled', true);
+    removeD.setAttribute('disabled', true);
+    removeWm.setAttribute('disabled', true);
+    dryInput.style.display =  'none';
+    dryTime.style.display =  'block';
+    washTime.style.display =  'none';
   }
   else {
     sendWb.removeAttribute('disabled');
     sendD.removeAttribute('disabled');
     sendWm.removeAttribute('disabled');
+    removeWb.removeAttribute('disabled');
+    removeD.removeAttribute('disabled');
+    removeWm.removeAttribute('disabled');
+    washInput.style.display =  'block';
+    dryInput.style.display =  'block';
+    washTime.style.display =  'none';
+    dryTime.style.display =  'none';
   }
+}
+
+function selectAll (className,  checkBox) { //selects all checkboxes in a section
+  const checkBoxes = document.querySelectorAll(className);
+  
+
+  if(checkBox.checked == true) {
+    for (let i = 0; i < checkBoxes.length; i++) {
+      let itemDiv = checkBoxes[i].closest('#item');
+      console.log(checkBoxes[i].style.display)
+      if (itemDiv.style.display == 'block') {
+        checkBoxes[i].checked = true;
+      }
+    }
+  }
+  else {
+    for (let i = 0; i < checkBoxes.length; i++) {
+      checkBoxes[i].checked = false;
+    }
+  }
+  return true;
 }
 
 function inArray(array, values) { //checks if all of the values in an array are in another array
@@ -99,7 +150,8 @@ function removeRepeats(array) { // removes repeated values [1, 1, 3] => [3]
   return newArray;
 }
 
-function handleData(funcForm, funcName, funcError) //prevents forms submitting when nothing is selected
+
+function handleData(funcForm, funcName, funcError) //prevents forms submitting when nothing is selected (existence check)
 {
 
   let form_data = new FormData(document.querySelector(funcForm));
@@ -116,6 +168,7 @@ function handleData(funcForm, funcName, funcError) //prevents forms submitting w
     return true;
   }
 }
+
 
 
 if (item != undefined) {
@@ -156,9 +209,13 @@ for (let i = 0; i < coll.length; i++) { // code for dropdown menus
         itemLocations[arr2[i]][j].style.display = 'none';
         if (!inArray(locations[arr[i]][j + 1], navFilter)) {
           itemLocations[arr2[i]][j].style.display = 'none';
+          itemLocations[arr2[i]][j].querySelector('input').checked = false;
+          itemLocations[arr2[i]][j].closest('form').querySelector('.select-all').checked = false;
         }
         else {
           itemLocations[arr2[i]][j].style.display = 'block';
+          itemLocations[arr2[i]][j].querySelector('input').checked = false;
+          itemLocations[arr2[i]][j].closest('form').querySelector('.select-all').checked = false;
         }
       }
     }
@@ -169,10 +226,10 @@ for (let i = 0; i < coll.length; i++) { // code for dropdown menus
 for (let i = 0; i < navButton.length; i++) {
   navButton[i].addEventListener("click", function () { //navigation button onclick (far left column)
 
-    if (dot[i].style.display === "inline") { //dot thats displayed when the button is clicked
-      dot[i].style.display = "none";
-    } else {
-      dot[i].style.display = "inline";
+    if (navButton[i].classList.contains("underline")) { //underlines and bolds the text that is clicked
+      navButton[i].classList.remove('underline');
+    } else {  
+      navButton[i].classList.add('underline');
     }
 
     navFilter.push(navButton[i].textContent); //creates a togglable navigation system 
@@ -209,12 +266,70 @@ for (let i = 0; i < navButton.length; i++) {
 }
 
 
+
+function changeWashDryTime (div, id, type) { //changes the time left in wash or dry cycles
+  let time = div.textContent.replace('Time left: ', '');
+
+  if (time.split(':')[1] != '00' && time != '0:00') {
+    let minute1 = parseInt(time.split(':')[1][0]);
+    let minute2 = parseInt(time.split(':')[1][1]);
+    if (minute2 == 0) {
+      let finalMinutes = `${minute1-1}9`;
+      let finalTime = `${time.split(':')[0]}:${finalMinutes}`;
+      div.innerHTML = '<b>Time left: </b>' + finalTime;
+    }
+    else if(minute2 != 0){
+      let finalMinutes = `${minute1}${minute2-1}`;
+      let finalTime = `${time.split(':')[0]}:${finalMinutes}`;
+      div.innerHTML = '<b>Time left: </b>' + finalTime;
+    }
+  }
+  else if (time.split(':')[1] == '00' && time != '0:00'){
+    console.log(time);
+    let hour = parseInt(time.split(':')[0]);
+    let finalHour = hour - 1;
+    finalTime = `${finalHour}:59`;
+    div.innerHTML = '<b>Time left: </b>' + finalTime;
+    
+  }
+
+  if (div.textContent.replace('Time left: ', '') == '0:00') {
+    // TODO: Interval isn't being cleared
+    clearInterval(id);
+
+    if (type == 'wash') {
+      washLocation = 'false';
+    }
+
+    if (type == 'dry') {
+      dryLocation = 'false';
+    }
+
+    disableButtons();
+
+    fetch("/updateTimer", {
+      method: "POST",
+      body: JSON.stringify({
+        data: `${type} done`
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    });
+      
+  }
+}
+
+
 function callDateTime() { // gets the current time
   currentTime = (new Date()).toLocaleTimeString();
   document.getElementById('watch').textContent = currentTime;
 }
 
-
-
-
 setInterval(callDateTime, 1000); //gets the current time every second
+
+setInterval(function () {
+  console.log('wash: ' + washLocation);
+  console.log('dry: ' + dryLocation);
+}, 1000)
+

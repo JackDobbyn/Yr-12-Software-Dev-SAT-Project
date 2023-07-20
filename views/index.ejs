@@ -18,7 +18,7 @@
       <div class="column is-8"> 
         <div class="columns" id="form3">
           <div class="column is-3" id="left-form"> <!--navigation column -->
-            <div class="is-size-4 has-text-weight-bold pl-2"><u>Navigation</u></div>
+            <div class="is-size-4 has-text-weight-bold pl-2"><u>Filter</u></div>
             <div class="content">
               <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Dependencies</div>
               <ul class="is-size-7">
@@ -30,95 +30,117 @@
             <div class="content">
               <div class="is-size-7 has-text-weight-bold has-text-grey pl-2">Colour</div>
               <ul class="is-size-7">
-                <li><a id="nav-button">White<img class="dot"src="dot.png"></a></li>
-                <li><a id="nav-button">Coloured<img class="dot"src="dot.png"></a></li>
+                <li><a id="nav-button">White</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Yellow</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Orange</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Red</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Violet</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Indigo</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Blue</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Green</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Black</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Grey</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Pink</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Purple</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Turquoise</a><img class="dot"src="dot.png"></a></li>
+                <li><a id="nav-button">Brown</a><img class="dot"src="dot.png"></li>
+                <li><a id="nav-button">Gold</a><img class="dot"src="dot.png"></li>     
               </ul>
             </div>
           </div>
 
           
-          <div class="column is-9 px-0" id="right-form">
+          <div class="column is-9 px-0" id="right-form"> <!--clothes section column-->
             <% for (let i = 0; i < sections.length; i++) { %> 
-            <button type="button" id="collapsible"> <%= sections[i][0] %>
-              <img class="is-pulled-right caret" id="caret" src="caret1.png">
-            </button>
-            <div id="content">
-              <div class="columns" id="sec">
-                <div class="column is-5 has-text-centered" id="details">
-                  <div class="is-size-7 has-text-weight-bold">Number of Clothes:</div>
-                  <p class="is-size-7"><%= sections[i][1] %></p>
-                  <div class="is-size-7 has-text-weight-bold">Oldest Item at:</div>
-                  <p class="is-size-7"><%= sections[i][3] %></p>
-                  <div class="content">
-                    <div class="is-size-7 has-text-weight-bold">Dependencies</div>
-                    <ul class="is-size-7" id="one">
-                      <li><a id="item-button"><%= sections[i][4] %></a></li>
-                      <li><a id="item-button"><%= sections[i][5] %></a></li>
-                      <li><a id="item-button"><%= sections[i][6] %></a></li>
-                    </ul>
-                    <% if (sections[i][0] == 'Washing Basket') { %> 
-                      <label class="is-size-7 has-text-weight-bold">Wash time:</label>
-                      <input type="text"  name="time" form="items-form-<%= i %>" class="time" placeholder=" 5:35">
-                      <label class="is-size-7 has-text-weight-bold">hrs</label>
-  
-                    <% }else if(sections[i][0] == 'Washing Machine'){ %>
-                      <label class="is-size-7 has-text-weight-bold">Dry time:</label>
-                      <input type="text"  name="time" form="items-form-<%= i %>" class="time" placeholder=" 5:35">
-                      <label class="is-size-7 has-text-weight-bold">hrs</label>
-                    <% } %>
+              <button type="button" id="collapsible"> <%= sections[i][0] %>
+                <img class="is-pulled-right caret" id="caret" src="caret1.png">
+              </button>
+              <div id="content">
+                <div class="columns" id="sec">
+                  <div class="column is-5 has-text-centered" id="details">
+                    <div class="is-size-7 has-text-weight-bold">Number of Clothes:</div>
+                    <p class="is-size-7"><%= sections[i][1] %></p>
+                    <div class="is-size-7 has-text-weight-bold">Oldest Item at:</div>
+                    <p class="is-size-7"><%= sections[i][3] %></p>
+                    <div class="content">
+                      <div class="is-size-7 has-text-weight-bold">Dependencies</div>
+                      <ul class="is-size-7" id="one">
+                        <li><a id="item-button"><%= sections[i][4] %></a></li>
+                        <li><a id="item-button"><%= sections[i][5] %></a></li>
+                        <li><a id="item-button"><%= sections[i][6] %></a></li>
+                      </ul>
+                      <% if (sections[i][0] == 'Washing Basket') { %>
+                      <div class="wash-input">
+                        <label class="is-size-7 has-text-weight-bold">Wash time:</label>
+                        <input type="text"  name="time" form="items-form-<%= i %>" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" class="time" placeholder=" 5:35" required>
+                        <label class="is-size-7 has-text-weight-bold">hrs (0-23:59)</label>
+                      </div>
+                      <% } %>
+
+                      <% if (sections[i][0] == 'Washing Machine') { %>
+                      <div class="dry-input">
+                        <label class="is-size-7 has-text-weight-bold">Dry time:</label>
+                        <input type="text"  name="time" form="items-form-<%= i %>" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" class="time" placeholder=" 5:35" required>
+                        <label class="is-size-7 has-text-weight-bold">hrs (0-23:59)</label>
+                      </div>     
+                      <div class="wash-time is-size-7"><b>Time left:</b> <%= washLength %></div>
+                      <% } %> 
+
+                      <% if (sections[i][0] == 'Dryer / Line') { %>
+                        <div class="dry-time is-size-7"><b>Time left:</b> <%= dryLength %></div>
+                      <% } %>
+                    </div>
+                  </div> 
+                  <div class="column is-7 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
                     
-                  </div>
-                </div> 
-                <div class="column is-7 px-0 <%= sections[i][0] + '-checkboxes'%>" id="storage">
-                  
-                  <form action="/items" method="post"  id="items-form-<%= i %>" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
-                    <div class="overflow height-fixed-content">
-                      <% for (let j=0; j < item.length; j++) { %>
-                      <% if (sections[i][0] == item[j][1]) { %>
-                      <div id="item" class="<%= sections[i][0].replace(' / ', '').replace(' ', '') %>"> <!--individual item of clothing. displays the name, dependencies and is sorted into a specific location-->
-                        <div class="columns is-vcentered">
-                          <div class="column is-3 has-text-centered">
-                            <p><strong><%= item[j][3] %></strong> <%= item[j][0] %></p>
-                          </div>
-                          <div class="column is-7 has-text-centered">
-                            <p><strong>Dependencies: </strong><ul>
-                              <% for(let x = 0; x < item[j][4].split('-')[0].length; x++) { %>
-                              <li><%= item[j][4].split('-')[x] %></li>
-                              <% } %>
-                            </ul></p>
-                          </div>
-                          <div class="column is-2 has-text-centered">
-                            <div class="field">
-                              <div class="control">
-                                <input type="checkbox" name='send' value = '<%= item[j][2] + "-" + sections[i][0] %>'>
+                    <form action="/items" method="post"  id="items-form-<%= i %>" class="items-form-<%= i %>" onsubmit="return handleData('.items-form-<%= i %>', 'send', '.warning')">
+                      <div class="overflow height-fixed-content">
+                        <% for (let j=0; j < item.length; j++) { %>
+                        <% if (sections[i][0] == item[j][1]) { %>
+                        <div id="item" class="<%= sections[i][0].replace(' / ', '').replace(' ', '') %>"> <!--individual item of clothing. displays the name, dependencies and is sorted into a specific location-->
+                          <div class="columns is-vcentered">
+                            <div class="column is-3 has-text-centered">
+                              <p><strong><%= item[j][3] %></strong> <%= item[j][0] %></p>
+                            </div>
+                            <div class="column is-7 has-text-centered">
+                              <p><strong>Dependencies: </strong><ul>
+                                <% for(let x = 0; x < item[j][4].split('-')[0].length; x++) { %>
+                                <li><%= item[j][4].split('-')[x] %></li>
+                                <% } %>
+                              </ul></p>
+                            </div>
+                            <div class="column is-2 has-text-centered">
+                              <div class="field">
+                                <div class="control">
+                                  <input type="checkbox"name='send' class='check-<%= sections[i][0].replace(` / `, ``).replace(` `, `-`) %>' value = '<%= item[j][2] + "-" + sections[i][0] %>'>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
+                        <% } %>
+                        <% } %>
                       </div>
-                      <% } %>
-                      <% } %>
-                    </div>
-                    <div class="submitBox mr-4">
-                      <div class="columns is-gapless">
-                        <div class="column is-5 has-text-danger"><p class="warning">Select at least one item</p></div>
-                        <div class="column is-7 ml-0 pl-0">
-                          <button class="is-pulled-right mr-2 mt-2 send-<%= sections[i][0].replace(' / ', '').replace(' ', '') %>" type="submit" name="remove" value="false">Send</button>
-                          <% if (sections[i][0] == 'Wardrobe') { %>
-                            <button class="is-pulled-right mr-2 mt-2" type="submit" name="remove" value="true">Remove</button>
-                          <% } %>
-                          
+                      <div class="submitBox mr-4">
+                        <div class="columns is-gapless">
+                          <div class="column is-5 has-text-danger"><p class="warning">Please select at least one item</p></div>
+                          <div class="column is-7 ml-0 pl-0">
+                            <label class="is-size-7 has-text-weight-bold mt-4">Select All:</label>
+                            <input type="checkbox" class="select-all mt-4" onchange="selectAll('.check-<%= sections[i][0].replace(` / `, ``).replace(` `, `-`) %>', this)">
+                            <button class="has-text-light is-pulled-right mr-2 mt-2 button is-small send-<%= sections[i][0].replace(' / ', '').replace(' ', '') %>" type="submit" name="remove" value="false" style="background-color: #04AA6D;">Send</button>
+                            <button class="is-pulled-right mr-2 mt-2 button is-small has-background-danger-dark has-text-light remove-<%= sections[i][0].replace(' / ', '').replace(' ', '') %>" type="submit" name="remove" value="true">Remove</button>
+                            
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
+            <% } %>
+            <div id="nav-content" class="pt-2 has-text-centered">
+              No items match description
             </div>
-          <% } %>
-          <div id="nav-content" class="pt-2 has-text-centered">
-            No items match description
-          </div>
           </div>
           
         </div>
@@ -126,7 +148,7 @@
       <div class="column is-4" id="form2">
         <div id="form1"> <!--clothes input form-->
           <form action="/" method="post" class="clothes-form-0" onsubmit="return !!(handleData('.clothes-form-0', 'name', '.warning-clothes') & handleData('.clothes-form-0', 'colourOption', '.warning-clothes') & handleData('.clothes-form-0', 'dOption[]', '.warning-clothes'));">
-            <div class="is-size-3 has-text-weight-bold">Clothes input form</div>
+            <div class="is-size-3 has-text-weight-bold"><u>Clothes input form</u></div>
             <div class="columns">
               <div class="column is-7">
                 <div class="field">
@@ -173,7 +195,7 @@
                     <input type="checkbox" name="dOption[]" value="Other">
                   </div>
                 </div>  
-                <button type="submit">Submit</button>
+                <button class="button has-text-light"type="submit" style="background-color: #04AA6D;">Submit</button>
                 <p class="warning-clothes has-text-danger is-size-7">Please completely fill out the form</p>
                 <div id="watch" class="is-size-6"></div>
               </div>
@@ -186,7 +208,7 @@
   </main>
 
   <!--allows the frontend js code to use variables passed from the backend-->
-  <div class="data" data-sections="<%= sections.map(subArray => subArray.join('|')).join(',') %>" <% if (item.length > 0) { %>data-item="<%= item.map(subArray => subArray.join('|')).join(',') %>"<% } %>></div>
+  <div class="data" <% if (item.length > 0) { %>data-item="<%= item.map(subArray => subArray.join('|')).join(',') %>"<% } %>></div>
 
 
   <script src="script.js" ></script>
