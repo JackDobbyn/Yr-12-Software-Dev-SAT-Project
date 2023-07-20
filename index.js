@@ -23,8 +23,7 @@ const con = new Pool({
   user: 'user1',
   password: '0fjmiVFAl6p8okVPNze0boXrXlnCBbmS',
   database: 'mydb_yb7n',
-  host: 'dpg-cijt0u6nqql0l1u2s930-a',
-  port: 5432
+  url: 'postgres://user1:0fjmiVFAl6p8okVPNze0boXrXlnCBbmS@dpg-cijt0u6nqql0l1u2s930-a.oregon-postgres.render.com/mydb_yb7n'
 });
 
 
